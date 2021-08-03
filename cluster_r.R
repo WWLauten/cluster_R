@@ -21,5 +21,5 @@ filmes_transf <- filmes_transf %>%
                   select(-movieId, -titulo)
 
 
-## normalizar as bases de dados utilizando scale.
-dados_normalizados <- scale(filmes_transf)
+## normalizar as bases de dados utilizando scale e transformar em um data frame.
+dados_normalizados <- data.frame(scale(filmes_transf))
