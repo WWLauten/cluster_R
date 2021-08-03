@@ -23,3 +23,43 @@ filmes_transf <- filmes_transf %>%
 
 ## normalizar as bases de dados utilizando scale e transformar em um data frame.
 dados_normalizados <- data.frame(scale(filmes_transf))
+
+## usando clusterização com kmeans com a mesma semente de geração de números aleatórios
+set.seed(1987)
+## usaremos 3 para o número de clusters ou 3 centróides. 
+resultado_cluster <- kmeans(dados_normalizados, centers = 3)
+
+## para mostrar a classificação de cada filme nos clusters achados de 1 a 3.
+resultado_cluster$cluster
+
+## para mostrar um df usa-se o view. Nesse caso vamos verificar os clusters means ou centros (?) por gênero de filme.
+View(resultado_cluster$centers)
+
+## para analisar vamos observar os dados gerais dos clusters (https://smolski.github.io/livroavancado/analise-de-clusters.html)
+print(resultado_cluster)
+
+## Esse é um vetor com a soma dos quadrados dentro dos clusters
+resultado_cluster$withinss
+
+## K-means clustering with 3 clusters of sizes 6797, 158, 1637
+resultado_cluster$size
+
+## Como o número de filmes em cada cluster é bastante desigual e a soma dos quadrados também está muito diferente
+## provavelmente teremos que refazer com outro número de clusters
+## Vamos observar agora com gráficos.
+
+install.packages('cluster')
+
+library(cluster)
+
+## clusplot deve receber os dados originais e o vetor de cluster que achamos com 3.
+## as distâncias entre as linhas de cada cluster indica a quantidade de elementos que cada cluster possui.
+## mais próximo mais dados, mais distante menos.
+clusplot(filmes_transf, resultado_cluster$cluster,
+         color = TRUE, shade = TRUE)
+
+install.packages('fpc')
+
+library(fpc)
+
+plotcluster(x = dados_normalizados, resultado_cluster$cluster, ignorenum = T)
