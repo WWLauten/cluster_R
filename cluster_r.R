@@ -48,7 +48,7 @@ resultado_cluster$size
 ## provavelmente teremos que refazer com outro número de clusters
 ## Vamos observar agora com gráficos.
 
-install.packages('cluster')
+## install.packages('cluster')
 
 library(cluster)
 
@@ -58,7 +58,7 @@ library(cluster)
 clusplot(filmes_transf, resultado_cluster$cluster,
          color = TRUE, shade = TRUE)
 
-install.packages('fpc')
+## install.packages('fpc')
 
 library(fpc)
 
@@ -68,7 +68,11 @@ plotcluster(x = dados_normalizados, resultado_cluster$cluster, ignorenum = T)
 centros <- resultado_cluster$centers
 View(centros)
 
+<<<<<<< HEAD
 install.packages('reshape2')
+=======
+## install.packages('reshape2')
+>>>>>>> feature/l-4-a-2
 
 library(reshape2)
 
@@ -82,11 +86,44 @@ colnames(centros_2) <- c('cluster', 'gênero', 'centro')
 ## encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors)
 centros_2$cluster <- as.factor(centros_2$cluster)
 
+<<<<<<< HEAD
 install.packages('ggplot2')
+=======
+## install.packages('ggplot2')
+>>>>>>> feature/l-4-a-2
 
 library(ggplot2)
 
 ## “facet_grid” para gerar os gráficos de forma separada para cada cluster
 ggplot(data = centros_2) +
   geom_bar(aes(x = gênero, y = centro, fill = cluster), stat = 'identity') +
+<<<<<<< HEAD
   facet_grid(cluster ~ .)
+=======
+  facet_grid(cluster ~ .)
+
+## Técnicas e estatísticas para selecionar melhor o número de clusters
+## uma das técnicas é a Elbow (Cotovelo) ou SSE (do inglês, sum of squared error). 
+## Para utilizá-la vamos criar um vetor chamado “range_k”
+## esse vetor irá representar quantidade de clusters que vamos testar, que será de 1 a 25
+range_k <- c(1:25)
+## Vamos criar um objeto chamado “soma_quadrados”, o qual irá armazenar a soma dos quadrados de cada simulação.
+soma_quadrados <- 0
+
+## Vamos simular com vários números de clusters. 
+## nstart	= if centers is a number, how many random sets should be chosen? Vamos usar 25. 
+for (i in range_k) {
+  cluster <- kmeans(dados_normalizados, centers = i, nstart = 25)
+  ## Within cluster sum of squares by cluster. Vamos somar a soma dos quadrados de cada cluster para cada iteração.
+  soma_quadrados[i] <- sum(cluster$withinss)  
+} 
+
+## Colocando em um gráfico para melhor visualização.
+plot(range_k, soma_quadrados, type = 'b',
+     xlab = 'Número de clusters',
+     ylab = 'Soma dos quadrados')
+## Adds an axis to the current plot, allowing the specification of the side, position, labels, and other options.
+axis(side = 1, at = range_k, labels = range_k)
+## Colocando uma linha onde achamos o 1.o elbow depois do 2.º cluster (o 1.º é desprezado). IMHO seria o próprio 3.
+abline(v = 5, col = 'red')
+>>>>>>> feature/l-4-a-2
