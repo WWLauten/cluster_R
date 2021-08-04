@@ -115,3 +115,61 @@ plot(range_k, soma_quadrados, type = 'b',
 axis(side = 1, at = range_k, labels = range_k)
 ## Colocando uma linha onde achamos o 1.o elbow depois do 2.º cluster (o 1.º é desprezado). IMHO seria o próprio 3.
 abline(v = 5, col = 'red')
+
+## Como pudemos perceber no método anterior, nem sempre é fácil indicar o ponto de inflexão 
+## com número de clusters mais adequado. Para complementar a análise do Elbow, outro método 
+## para verificar o número mais adequado de cluster é o Silhouette, esse método consiste em calcular a média da silhueta.
+rm(range_k) ## liberando memória.
+range_k <- c(2:15)
+medias_silhoutte <- c(0)
+
+## usando a mesma semente de geração de números aleatórios
+set.seed(1987)
+for (i in range_k) {
+  clusters <- kmeans(dados_normalizados, centers = i)
+  ## dist computes and returns the distance matrix computed by using the specified distance measure to compute the
+  ## distances between the rows of a data matrix
+  silhueta <- silhouette(clusters$cluster, dist(dados_normalizados))
+  medias_silhoutte[i] <- mean(silhueta[,3])  
+} 
+
+## Colocando em um gráfico para melhor visualização.
+plot(medias_silhoutte, type = 'b',
+     xlab = 'Número de clusters',
+     ylab = 'Média Silhoutte')
+## Adds an axis to the current plot, allowing the specification of the side, position, labels, and other options.
+axis(side = 1, at = range_k, labels = range_k)
+
+## O método silhueta consiste em calcular a média para cada escolha, que pode variar de -1 até +1, 
+## quanto mais perto de -1 significa que a quantidade de cluster não está boa e quanto mais próximo de 1 significa 
+## que a divisão da quantidade de cluster ficou boa.
+## Vamos pegar apenas 12 clusters, foi a primeira das avaliações mais altas que aconteceram, mais próximas de 1,
+## o resultado desse ponto está próximo de 0.3, como o de 15 clusters, mas como foi a primeira que aconteceu, então vamos
+## utilizar esse valor.
+set.seed(1987)
+resultado_cluster <- kmeans(dados_normalizados, centers = 12)
+
+centros <- resultado_cluster$centers
+## Função melt para converter colunas em linhas (transposição)
+centros_2 <- melt(centros)
+## Alterar o nome das colunas para ficar mais intuitivo.
+colnames(centros_2) <- c('cluster', 'gênero', 'centro')
+## encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors)
+centros_2$cluster <- as.factor(centros_2$cluster)
+
+## “facet_grid” para gerar os gráficos de forma separada para cada cluster
+ggplot(data = centros_2) +
+  geom_bar(aes(x = gênero, y = centro, fill = cluster), stat = 'identity') +
+  facet_grid(cluster ~ .)
+
+## Criar uma nova coluna chamada cluster e vamos atribuir o resultado que nós tivemos dos clusters
+filmes$cluster <- resultado_cluster$cluster
+
+## Nós vamos recuperar apenas a coluna cluster, que nós só queremos saber qual cluster ele pertence, 
+## vamos salvar isso dentro de uma variável chamada agrupamento
+agrupamento <- filmes[filmes$title == 'Toy Story (1995)', 'cluster']
+
+## Vamos recuperar apenas os títulos, vamos executar, para retornar 
+## apenas os dez primeiros filmes, a função “sample” para pegar apenas 10 filmes
+filmes[filmes$cluster == agrupamento, 'title'] %>%
+  sample(10)
