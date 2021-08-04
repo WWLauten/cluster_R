@@ -82,3 +82,11 @@ colnames(centros_2) <- c('cluster', 'gênero', 'centro')
 ## encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors)
 centros_2$cluster <- as.factor(centros_2$cluster)
 
+install.packages('ggplot2')
+
+library(ggplot2)
+
+## “facet_grid” para gerar os gráficos de forma separada para cada cluster
+ggplot(data = centros_2) +
+  geom_bar(aes(x = gênero, y = centro, fill = cluster), stat = 'identity') +
+  facet_grid(cluster ~ .)
