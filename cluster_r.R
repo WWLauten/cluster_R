@@ -63,3 +63,30 @@ install.packages('fpc')
 library(fpc)
 
 plotcluster(x = dados_normalizados, resultado_cluster$cluster, ignorenum = T)
+
+## Demonstrar os resultados de forma mais simples para um usuário comum.
+centros <- resultado_cluster$centers
+View(centros)
+
+install.packages('reshape2')
+
+library(reshape2)
+
+## Função melt para fundir os dados, converter colunas em linhas (transposição)
+centros_2 <- melt(centros)
+View(centros_2)
+
+## Alterar o nome das colunas para ficar mais intuitivo.
+colnames(centros_2) <- c('cluster', 'gênero', 'centro')
+
+## encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors)
+centros_2$cluster <- as.factor(centros_2$cluster)
+
+install.packages('ggplot2')
+
+library(ggplot2)
+
+## “facet_grid” para gerar os gráficos de forma separada para cada cluster
+ggplot(data = centros_2) +
+  geom_bar(aes(x = gênero, y = centro, fill = cluster), stat = 'identity') +
+  facet_grid(cluster ~ .)
