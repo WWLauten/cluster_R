@@ -68,11 +68,7 @@ plotcluster(x = dados_normalizados, resultado_cluster$cluster, ignorenum = T)
 centros <- resultado_cluster$centers
 View(centros)
 
-<<<<<<< HEAD
-install.packages('reshape2')
-=======
 ## install.packages('reshape2')
->>>>>>> feature/l-4-a-2
 
 library(reshape2)
 
@@ -86,20 +82,13 @@ colnames(centros_2) <- c('cluster', 'gênero', 'centro')
 ## encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors)
 centros_2$cluster <- as.factor(centros_2$cluster)
 
-<<<<<<< HEAD
-install.packages('ggplot2')
-=======
 ## install.packages('ggplot2')
->>>>>>> feature/l-4-a-2
 
 library(ggplot2)
 
 ## “facet_grid” para gerar os gráficos de forma separada para cada cluster
 ggplot(data = centros_2) +
   geom_bar(aes(x = gênero, y = centro, fill = cluster), stat = 'identity') +
-<<<<<<< HEAD
-  facet_grid(cluster ~ .)
-=======
   facet_grid(cluster ~ .)
 
 ## Técnicas e estatísticas para selecionar melhor o número de clusters
@@ -126,4 +115,3 @@ plot(range_k, soma_quadrados, type = 'b',
 axis(side = 1, at = range_k, labels = range_k)
 ## Colocando uma linha onde achamos o 1.o elbow depois do 2.º cluster (o 1.º é desprezado). IMHO seria o próprio 3.
 abline(v = 5, col = 'red')
->>>>>>> feature/l-4-a-2
