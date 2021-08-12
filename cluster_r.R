@@ -173,3 +173,25 @@ agrupamento <- filmes[filmes$title == 'Toy Story (1995)', 'cluster']
 ## apenas os dez primeiros filmes, a função “sample” para pegar apenas 10 filmes
 filmes[filmes$cluster == agrupamento, 'title'] %>%
   sample(10)
+
+## Fizemos clusters que nos possibilitam indicar filmes a partir de clusters, mas, só podemos recomendar filmes que 
+## estão no mesmo agrupamento. E se quisermos fazer recomendações de filmes de outro cluster, mas que tenham alguma
+## semelhança?
+## Utilizando o algoritmo KMeans não é possível fazer esse tipo de recomendação, como fizemos anteriormente,
+## então nós temos que utilizar outro tipo de técnica, a técnica de clusterização chamada cluster hierárquico.
+
+## Primeiro vamos calcular a matriz de distância com a função “dist” dos nossos centros, que calculamos anteriormente,
+## vamos salvar em um objeto chamado “matriz_dist”, para indicar que é uma matriz de distribuição, vamos executar,
+## agora vamos visualizar esse objeto que nós criamos.
+matriz_dist <- dist(centros)
+matriz_dist
+
+## Como é muito complicado decidir se um valor como 2.272573 (o min(matriz_dist)) indica similaridade ou 10.63922,
+## o max(matriz_dist) indica o contrário para identificar os clusters similares, o que nós podemos fazer?
+## Vamos utilizar uma técnica chamada cluster hierárquico, para os algoritmos de cluster hierárquico vamos utilizar
+## a função hclust que já vem no próprio R
+clust_h <- hclust(matriz_dist)
+
+plot(clust_h)
+
+plot(clust_h, hang = -1)
